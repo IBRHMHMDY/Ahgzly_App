@@ -11,14 +11,20 @@ class BookingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     Color statusColor;
     switch (booking.status.toLowerCase()) {
+      case 'pending':
+        statusColor = Colors.grey;
+        break;
       case 'confirmed':
+        statusColor = Colors.orange;
+        break;
+      case 'attended':
         statusColor = Colors.green;
         break;
       case 'cancelled':
         statusColor = Colors.red;
         break;
       default:
-        statusColor = Colors.orange;
+        statusColor = Colors.grey;
     }
 
     return Card(

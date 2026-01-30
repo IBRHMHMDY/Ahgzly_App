@@ -18,4 +18,27 @@ class BookingsRepositoryImpl implements BookingsRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<void> createBooking({
+    required int restaurantId,
+    required String date,
+    required String time,
+    required int guests,
+  }) async {
+    try {
+      await apiConsumer.post(
+        EndPoints.bookings,
+        body: {
+          'restaurant_id': restaurantId,
+          'booking_date': date,
+          'start_at': time,
+          'guests_count': guests,
+        },
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 }

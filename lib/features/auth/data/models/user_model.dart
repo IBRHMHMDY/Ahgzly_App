@@ -5,22 +5,25 @@ class UserModel extends UserEntity {
   const UserModel({
     required super.name,
     required super.email,
+    required super.phone,
     required super.token,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     // التحقق من مكان وجود البيانات بناءً على هيكلية Laravel الشائعة
     // قد تكون البيانات مباشرة في الجذر أو داخل مفتاح 'data' أو 'user'
-    final userData = json['user'] ?? json['data'] ?? json;
+    final user = json['data'];
+    
 
     return UserModel(
-      name: userData['name'] ?? '', // قيمة افتراضية لتجنب null errors
-      email: userData['email'] ?? '',
-      token: json[ApiKeys.token] ?? '', // التوكن عادة يأتي في الجذر
+      name: user['name'].toString(), // قيمة افتراضية لتجنب null errors
+      email: user['email'].toString(),
+      phone: user['phone'].toString(),
+      token: json[ApiKeys.token].toString(), // التوكن عادة يأتي في الجذر
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'name': name, 'email': email, 'token': token};
+    return {'name': name, 'email': email, 'phone': phone, 'token': token};
   }
 }

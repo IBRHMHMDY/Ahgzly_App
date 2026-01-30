@@ -1,15 +1,18 @@
 class EndPoints {
-  // ملاحظة: استخدم 10.0.2.2 إذا كنت تستخدم Android Emulator للوصول للسيرفر المحلي
-  // استخدم localhost أو IP جهازك إذا كنت تستخدم iOS Simulator أو جهاز حقيقي
-  static const String baseUrl = "http://192.168.1.10:8000/api/";
+  // Android Emulator = 10.0.2.2
+  // iOS Simulator, Physical Device = (Copy IP YourDevice)  192.168.1.X
+  static const String ip = "192.168.1.10";
+  static const String domain = "http://$ip:8000";
+  static const String storageUrl = "$domain/storage";
+  static const String baseUrl = "$domain/api/";
 
   static const String register = "auth/register";
   static const String login = "auth/login";
   static const String restaurants = "restaurants";
   static const String myBookings = "mybookings";
   static const String bookings = "bookings";
-  static const String profile = "auth/profile";
-  static const String logout = "auth/logout";
+  static const String profile = "profile";
+  static const String logout = "logout";
 }
 
 class ApiKeys {

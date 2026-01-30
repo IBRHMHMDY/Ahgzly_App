@@ -1,12 +1,17 @@
 import 'package:ahgzly_app/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:ahgzly_app/features/auth/domain/repositories/auth_repository.dart';
+import 'package:ahgzly_app/features/auth/domain/usecases/get_profile_usecase.dart';
 import 'package:ahgzly_app/features/auth/domain/usecases/login_usecase.dart';
+import 'package:ahgzly_app/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:ahgzly_app/features/auth/domain/usecases/register_usecase.dart';
 import 'package:ahgzly_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:ahgzly_app/features/auth/presentation/bloc/profile_bloc/profile_bloc.dart';
 import 'package:ahgzly_app/features/bookings/data/repositories/bookings_repository_impl.dart';
 import 'package:ahgzly_app/features/bookings/domain/repositories/bookings_repository.dart';
+import 'package:ahgzly_app/features/bookings/domain/usecases/create_booking_usecase.dart';
 import 'package:ahgzly_app/features/bookings/domain/usecases/get_my_bookings_usecase.dart';
 import 'package:ahgzly_app/features/bookings/presentation/bloc/bookings_bloc.dart';
+import 'package:ahgzly_app/features/bookings/presentation/cubit/create_booking_cubit.dart';
 import 'package:ahgzly_app/features/restaurants/data/repositories/restaurants_repository_impl.dart';
 import 'package:ahgzly_app/features/restaurants/domain/repositories/restaurants_repository.dart';
 import 'package:ahgzly_app/features/restaurants/domain/usecases/get_restaurants_usecase.dart';
@@ -56,10 +61,15 @@ class ServiceLocator {
     //UseCases
     sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
     sl.registerLazySingleton(() => RegisterUseCase(repository: sl()));
+    sl.registerLazySingleton(() => GetProfileUseCase(repository: sl()));
+    sl.registerLazySingleton(() => LogoutUseCase(repository: sl()));
 
     // Blocs
     sl.registerFactory(
       () => AuthBloc(loginUseCase: sl(), registerUseCase: sl()),
+    );
+    sl.registerFactory(
+      () => ProfileBloc(getProfileUseCase: sl(), logoutUseCase: sl()),
     );
 
     //! Restaurants Feature
@@ -81,5 +91,10 @@ class ServiceLocator {
     sl.registerLazySingleton(() => GetMyBookingsUseCase(repository: sl()));
     // Bloc
     sl.registerFactory(() => BookingsBloc(getMyBookingsUseCase: sl()));
+    // Create Booking Feature
+    // UseCases
+    sl.registerLazySingleton(() => CreateBookingUseCase(repository: sl()));
+    // Cubit
+    sl.registerFactory(() => CreateBookingCubit(createBookingUseCase: sl()));
   }
 }

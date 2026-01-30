@@ -1,3 +1,4 @@
+import 'package:ahgzly_app/core/api/end_points.dart';
 import 'package:ahgzly_app/features/restaurants/domain/entities/restaurant_entity.dart';
 
 class RestaurantModel extends RestaurantEntity {
@@ -12,15 +13,17 @@ class RestaurantModel extends RestaurantEntity {
   });
 
   factory RestaurantModel.fromJson(Map<String, dynamic> json) {
+    // 1. استخراج قيمة الصورة
+    String imageUrl = "${EndPoints.storageUrl}/$json['logo']";
+
+    
     return RestaurantModel(
       id: json['id'],
       name: json['name'] ?? 'Unknown Restaurant',
       // description: json['description'] ?? '',
       address: json['address'] ?? '',
       phone: json['phone'] ?? '',
-      image:
-          json['image'] ??
-          'https://placehold.co/600x400', // صورة افتراضية في حال عدم وجود صورة
+      image: imageUrl,
       // التعامل الآمن مع الأرقام (قد تأتي int أو double أو String)
       // rating: (json['rating'] is int)
       //     ? (json['rating'] as int).toDouble()

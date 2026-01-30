@@ -20,9 +20,9 @@ class BookingModel extends BookingEntity {
           json['restaurant']?['name'] ??
           'Unknown Restaurant',
       bookingDate: json['booking_date'] ?? '',
-      bookingTime: json['booking_time'] ?? '',
+      bookingTime: json['start_at'] ?? '',
       status: json['status'] ?? 'pending',
-      guestCount: int.tryParse(json['guest_count'].toString()) ?? 1,
+      guestCount: int.tryParse(json['guests_count'].toString()) ?? 1,
     );
   }
 }

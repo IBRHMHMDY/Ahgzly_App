@@ -2,8 +2,9 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:ahgzly_app/core/api/end_points.dart';
 import 'package:ahgzly_app/core/errors/exceptions.dart';
-import 'package:ahgzly_app/core/services/cache_helper.dart'; // import CacheHelper
-import 'package:ahgzly_app/core/services/service_locator.dart'; // import sl
+import 'package:ahgzly_app/core/services/cache_helper.dart';
+import 'package:ahgzly_app/core/services/service_locator.dart';
+import 'package:flutter/foundation.dart'; // من أجل debugPrint
 
 abstract class ApiConsumer {
   Future<dynamic> get(String path, {Map<String, dynamic>? queryParameters});
@@ -28,25 +29,17 @@ class DioConsumer implements ApiConsumer {
         return status! < 500;
       };
 
-    client.interceptors.add(
-      LogInterceptor(
-        request: true,
-        requestHeader: true,
-        requestBody: true,
-        responseHeader: true,
-        responseBody: true,
-        error: true,
-      ),
-    );
-
-    // ✅ إضافة Auth Interceptor
+    // إضافة Interceptors
     client.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
-          // قراءة التوكن مباشرة من الـ CacheHelper باستخدام sl
-          // ملاحظة: يمكن حقن CacheHelper في الـ Constructor ليكون أنظف (Dependency Injection)
-          // لكن للتبسيط ولأن sl متاح عالمياً، سنستخدمه هنا
+          // 1. ضمان وجود هيدر JSON دائماً
+          options.headers['Accept'] = 'application/json';
+          options.headers['Content-Type'] = 'application/json';
+
+          // 2. جلب التوكن وطباعته للتأكد
           final token = sl<CacheHelper>().getData(key: ApiKeys.token);
+          debugPrint("🔑 TOKEN SENT: $token"); // راقب هذا السطر في الكونسول
 
           if (token != null) {
             options.headers['Authorization'] = 'Bearer $token';
@@ -54,8 +47,32 @@ class DioConsumer implements ApiConsumer {
 
           return handler.next(options);
         },
+        onResponse: (response, handler) {
+          debugPrint("✅ RESPONSE [${response.statusCode}]: ${response.data}");
+          return handler.next(response);
+        },
+        onError: (error, handler) {
+          debugPrint(
+            "❌ ERROR [${error.response?.statusCode}]: ${error.response?.data}",
+          );
+          return handler.next(error);
+        },
       ),
     );
+
+    // LogInterceptor للمزيد من التفاصيل
+    if (kDebugMode) {
+      client.interceptors.add(
+        LogInterceptor(
+          request: true,
+          requestHeader: true,
+          requestBody: true,
+          responseHeader: true,
+          responseBody: true,
+          error: true,
+        ),
+      );
+    }
   }
 
   @override
@@ -86,11 +103,27 @@ class DioConsumer implements ApiConsumer {
   }
 
   dynamic _handleResponseAsJson(Response<dynamic> response) {
-    final responseJson = jsonDecode(response.data.toString());
-    return responseJson;
+    try {
+      final responseJson = jsonDecode(response.data.toString());
+      return responseJson;
+    } on FormatException {
+      // إذا فشل التحويل، فهذا يعني أن السيرفر أرسل HTML بدلاً من JSON
+      throw ServerException(
+        "Bad Response Format: Server returned HTML instead of JSON.\nCheck connection or Auth Token.",
+      );
+    }
   }
 
   void _handleDioError(DioException error) {
-    throw ServerException(error.message);
+    // محاولة استخراج رسالة الخطأ من السيرفر
+    String? serverMessage;
+    try {
+      if (error.response?.data != null) {
+        final json = jsonDecode(error.response!.data.toString());
+        serverMessage = json['message'] ?? json['error'];
+      }
+    } catch (_) {}
+
+    throw ServerException(serverMessage ?? error.message ?? "Unknown Error");
   }
 }

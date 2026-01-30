@@ -63,4 +63,28 @@ class AuthRepositoryImpl implements AuthRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<UserEntity> getProfile() async {
+    try {
+      final response = await apiConsumer.get(EndPoints.profile);
+      // نفترض أن الـ JSON القادم يحتوي على User object
+      return UserModel.fromJson(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> logout() async {
+    try {
+      // 1. طلب تسجيل الخروج من السيرفر (لإبطال التوكن)
+      await apiConsumer.post(EndPoints.logout);
+    } catch (e) {
+      // حتى لو فشل السيرفر (مثلاً التوكن منتهي أصلاً)، سنكمل الحذف محلياً
+    } finally {
+      // 2. حذف التوكن من الجهاز (أهم خطوة)
+      await cacheHelper.removeData(key: ApiKeys.token);
+    }
+  }
 }

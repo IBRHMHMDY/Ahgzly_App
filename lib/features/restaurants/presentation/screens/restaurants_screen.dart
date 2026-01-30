@@ -1,4 +1,5 @@
 import 'package:ahgzly_app/core/services/service_locator.dart';
+import 'package:ahgzly_app/features/bookings/presentation/screens/create_booking_screen.dart';
 import 'package:ahgzly_app/features/restaurants/presentation/bloc/restaurants_bloc.dart';
 import 'package:ahgzly_app/features/restaurants/presentation/bloc/restaurants_event.dart';
 import 'package:ahgzly_app/features/restaurants/presentation/bloc/restaurants_state.dart';
@@ -57,7 +58,15 @@ class RestaurantsScreen extends StatelessWidget {
                     return RestaurantCard(
                       restaurant: state.restaurants[index],
                       onTap: () {
-                        // TODO: Navigate to Details Screen
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CreateBookingScreen(
+                              restaurantId: state.restaurants[index].id,
+                              restaurantName: state.restaurants[index].name,
+                            ),
+                          ),
+                        );
                       },
                     );
                   },

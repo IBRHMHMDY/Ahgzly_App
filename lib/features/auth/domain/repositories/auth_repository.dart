@@ -3,8 +3,8 @@ import 'package:ahgzly_app/features/auth/domain/entities/user_entity.dart';
 abstract class AuthRepository {
   // دالة تسجيل الدخول
   Future<UserEntity> login({required String email, required String password});
-
-  // دالة إنشاء حساب جديد
+  Future<UserEntity> getProfile();
+  Future<void> logout();
   Future<UserEntity> register({
     required String name,
     required String email,
