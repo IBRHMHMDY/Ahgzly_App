@@ -1,16 +1,44 @@
-# ahgzly_app
+# 🍽️ Ahgzly App (MVP)
 
-A new Flutter project.
+A modern restaurant booking application built with **Flutter** using **Clean Architecture** principles. This app allows users to browse restaurants, view details, and book tables seamlessly.
 
-## Getting Started
+![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
+![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)
+![Laravel](https://img.shields.io/badge/laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white)
 
-This project is a starting point for a Flutter application.
+## 📱 Features
 
-A few resources to get you started if this is your first Flutter project:
+* **Authentication**: Login, Register, Logout, and Auto-Login (using JWT & Shared Preferences).
+* **Restaurants**: Browse a list of restaurants with dynamic data fetching.
+* **Booking System**: Book a table by selecting date, time, and guest count.
+* **User Profile**: View user details.
+* **Error Handling**: Robust error handling with custom exceptions.
+* **State Management**: Advanced state management using **BLoC** & **Cubit**.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## 🏗️ Architecture & Tech Stack
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The project follows strict **Clean Architecture** to ensure separation of concerns, testability, and scalability.
+
+* **Architecture**: Clean Architecture (Presentation, Domain, Data).
+* **State Management**: `flutter_bloc`.
+* **Networking**: `dio` (with Interceptors & Logging).
+* **Dependency Injection**: `get_it`.
+* **Value Equality**: `equatable`.
+* **Local Storage**: `shared_preferences`.
+* **UI**: Responsive design using `flutter_screenutil`.
+
+### 📂 Folder Structure
+```text
+lib/
+├── core/                   # Shared logic (Network, Errors, Utils, Widgets)
+├── features/               # App Features (Auth, Home, Restaurants, Bookings)
+│   ├── data/               # Models, Repositories Impl, Data Sources
+│   ├── domain/             # Entities, Repositories Interfaces, UseCases
+│   └── presentation/       # BLoC/Cubit, Screens, Widgets
+└── main.dart
+📸 ScreenshotsLogin ScreenHome ScreenBooking ScreenMy Bookings🚀 Getting StartedPrerequisitesFlutter SDK installed.Laravel Backend running locally (or hosted).InstallationClone the repository:Bashgit clone [https://github.com/YOUR_USERNAME/ahgzly_app.git](https://github.com/YOUR_USERNAME/ahgzly_app.git)
+Install dependencies:Bashcd ahgzly_app
+flutter pub get
+Configure API Endpoint:Go to lib/core/api/end_points.dart.Update ip variable with your local machine IP (for Android Emulator/Physical Device).Dartstatic const String ip = "192.168.1.X"; // Your IP here
+Run the App:Bashflutter run
+🔗 BackendThis app connects to a Laravel API.Authentication: Sanctum (Bearer Token).Endpoints: /login, /register, /restaurants, /bookings.Developed with ❤️ by [Your Name]
