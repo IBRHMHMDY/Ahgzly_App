@@ -2,8 +2,9 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:ahgzly_app/core/api/end_points.dart';
 import 'package:ahgzly_app/core/errors/exceptions.dart';
+import 'package:ahgzly_app/core/services/cache_helper.dart'; // import CacheHelper
+import 'package:ahgzly_app/core/services/service_locator.dart'; // import sl
 
-// Abstract class for Dependency Injection compatibility
 abstract class ApiConsumer {
   Future<dynamic> get(String path, {Map<String, dynamic>? queryParameters});
   Future<dynamic> post(
@@ -17,26 +18,16 @@ class DioConsumer implements ApiConsumer {
   final Dio client;
 
   DioConsumer({required this.client}) {
-    // إعدادات Dio الأساسية
     client.options
       ..baseUrl = EndPoints.baseUrl
-      ..responseType = ResponseType
-          .plain // نستقبل الداتا كنص ثم نحولها json لمرونة أكبر
+      ..responseType = ResponseType.plain
       ..followRedirects = false
       ..connectTimeout = const Duration(seconds: 20)
       ..receiveTimeout = const Duration(seconds: 20)
       ..validateStatus = (status) {
-        return status! <
-            500; // نعتبر الـ request ناجح إذا كان الـ status أقل من 500 لمعالجة أخطاء الـ 400 يدوياً
+        return status! < 500;
       };
 
-    // إضافة Headers ثابتة
-    client.options.headers = {
-      'Accept': 'application/json', // ضروري جداً لـ Laravel
-      'Content-Type': 'application/json',
-    };
-
-    // يمكننا هنا إضافة Interceptors لاحقاً لطباعة الـ Logs أو إضافة الـ Token
     client.interceptors.add(
       LogInterceptor(
         request: true,
@@ -45,6 +36,24 @@ class DioConsumer implements ApiConsumer {
         responseHeader: true,
         responseBody: true,
         error: true,
+      ),
+    );
+
+    // ✅ إضافة Auth Interceptor
+    client.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          // قراءة التوكن مباشرة من الـ CacheHelper باستخدام sl
+          // ملاحظة: يمكن حقن CacheHelper في الـ Constructor ليكون أنظف (Dependency Injection)
+          // لكن للتبسيط ولأن sl متاح عالمياً، سنستخدمه هنا
+          final token = sl<CacheHelper>().getData(key: ApiKeys.token);
+
+          if (token != null) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+
+          return handler.next(options);
+        },
       ),
     );
   }
@@ -82,8 +91,6 @@ class DioConsumer implements ApiConsumer {
   }
 
   void _handleDioError(DioException error) {
-    // هنا سنقوم بتوسيع معالجة الأخطاء لاحقاً
-    // حالياً سنرمي خطأ عام
     throw ServerException(error.message);
   }
 }

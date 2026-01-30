@@ -3,6 +3,10 @@ import 'package:ahgzly_app/features/auth/domain/repositories/auth_repository.dar
 import 'package:ahgzly_app/features/auth/domain/usecases/login_usecase.dart';
 import 'package:ahgzly_app/features/auth/domain/usecases/register_usecase.dart';
 import 'package:ahgzly_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:ahgzly_app/features/bookings/data/repositories/bookings_repository_impl.dart';
+import 'package:ahgzly_app/features/bookings/domain/repositories/bookings_repository.dart';
+import 'package:ahgzly_app/features/bookings/domain/usecases/get_my_bookings_usecase.dart';
+import 'package:ahgzly_app/features/bookings/presentation/bloc/bookings_bloc.dart';
 import 'package:ahgzly_app/features/restaurants/data/repositories/restaurants_repository_impl.dart';
 import 'package:ahgzly_app/features/restaurants/domain/repositories/restaurants_repository.dart';
 import 'package:ahgzly_app/features/restaurants/domain/usecases/get_restaurants_usecase.dart';
@@ -44,19 +48,16 @@ class ServiceLocator {
 
     //! Features
     //! Auth Feature
-    // 1. Register Repository
-    // نستخدم registerLazySingleton لأننا نريد نسخة واحدة فقط من الـ Repo
+    //Repository
     sl.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(apiConsumer: sl(), cacheHelper: sl()),
     );
 
-    // 2. Register UseCases
-    // الـ UseCases خفيفة، يمكن تسجيلها كـ Factory أو Singleton
+    //UseCases
     sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
     sl.registerLazySingleton(() => RegisterUseCase(repository: sl()));
 
-    // 3. Blocs
-    // نستخدم registerFactory لأن الـ Bloc يحتاج أن يتم تدميره وإنشاؤه مع إغلاق الشاشات (Disposal)
+    // Blocs
     sl.registerFactory(
       () => AuthBloc(loginUseCase: sl(), registerUseCase: sl()),
     );
@@ -66,11 +67,19 @@ class ServiceLocator {
     sl.registerLazySingleton<RestaurantsRepository>(
       () => RestaurantsRepositoryImpl(apiConsumer: sl()),
     );
-
     // UseCases
     sl.registerLazySingleton(() => GetRestaurantsUseCase(repository: sl()));
-
     // Bloc
     sl.registerFactory(() => RestaurantsBloc(getRestaurantsUseCase: sl()));
+
+    //! Bookings Feature
+    // Repository
+    sl.registerLazySingleton<BookingsRepository>(
+      () => BookingsRepositoryImpl(apiConsumer: sl()),
+    );
+    // UseCases
+    sl.registerLazySingleton(() => GetMyBookingsUseCase(repository: sl()));
+    // Bloc
+    sl.registerFactory(() => BookingsBloc(getMyBookingsUseCase: sl()));
   }
 }
