@@ -3,6 +3,10 @@ import 'package:ahgzly_app/features/auth/domain/repositories/auth_repository.dar
 import 'package:ahgzly_app/features/auth/domain/usecases/login_usecase.dart';
 import 'package:ahgzly_app/features/auth/domain/usecases/register_usecase.dart';
 import 'package:ahgzly_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:ahgzly_app/features/restaurants/data/repositories/restaurants_repository_impl.dart';
+import 'package:ahgzly_app/features/restaurants/domain/repositories/restaurants_repository.dart';
+import 'package:ahgzly_app/features/restaurants/domain/usecases/get_restaurants_usecase.dart';
+import 'package:ahgzly_app/features/restaurants/presentation/bloc/restaurants_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -56,5 +60,17 @@ class ServiceLocator {
     sl.registerFactory(
       () => AuthBloc(loginUseCase: sl(), registerUseCase: sl()),
     );
+
+    //! Restaurants Feature
+    // Repository
+    sl.registerLazySingleton<RestaurantsRepository>(
+      () => RestaurantsRepositoryImpl(apiConsumer: sl()),
+    );
+
+    // UseCases
+    sl.registerLazySingleton(() => GetRestaurantsUseCase(repository: sl()));
+
+    // Bloc
+    sl.registerFactory(() => RestaurantsBloc(getRestaurantsUseCase: sl()));
   }
 }

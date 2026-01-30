@@ -1,4 +1,5 @@
 import 'package:ahgzly_app/features/auth/presentation/screens/register_screen.dart';
+import 'package:ahgzly_app/features/home/presentation/screens/home_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -40,10 +41,18 @@ class _LoginScreenState extends State<LoginScreen> {
             child: BlocConsumer<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state is AuthSuccess) {
+                  // 1. إظهار رسالة ترحيب
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Welcome ${state.user.name}")),
                   );
-                  // TODO: Navigate to Home Screen later
+
+                  // 2. الانتقال للشاشة الرئيسية (مع منع العودة للخلف)
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomeLayout()),
+                    (route) =>
+                        false, // هذا يحذف كل الشاشات السابقة من المكدس (Stack)
+                  );
                 } else if (state is AuthError) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
