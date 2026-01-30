@@ -1,3 +1,4 @@
+import 'package:ahgzly_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ahgzly_app/core/services/service_locator.dart';
@@ -31,7 +32,7 @@ class AhgzlyApp extends StatelessWidget {
           title: 'Ahgzly App',
           theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
           // سنقوم بتغيير هذا لاحقاً إلى شاشة Login أو Home حسب حالة المستخدم
-          home: const Scaffold(body: Center(child: Text("Setup Complete!"))),
+          home: const LoginScreen(),
         );
       },
     );

@@ -1,3 +1,8 @@
+import 'package:ahgzly_app/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:ahgzly_app/features/auth/domain/repositories/auth_repository.dart';
+import 'package:ahgzly_app/features/auth/domain/usecases/login_usecase.dart';
+import 'package:ahgzly_app/features/auth/domain/usecases/register_usecase.dart';
+import 'package:ahgzly_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,6 +39,22 @@ class ServiceLocator {
     sl.registerLazySingleton<ApiConsumer>(() => DioConsumer(client: sl()));
 
     //! Features
-    // سنقوم بتسجيل الـ Blocs و Repositories الخاصة بالـ Auth هنا في الخطوات القادمة
+    //! Auth Feature
+    // 1. Register Repository
+    // نستخدم registerLazySingleton لأننا نريد نسخة واحدة فقط من الـ Repo
+    sl.registerLazySingleton<AuthRepository>(
+      () => AuthRepositoryImpl(apiConsumer: sl(), cacheHelper: sl()),
+    );
+
+    // 2. Register UseCases
+    // الـ UseCases خفيفة، يمكن تسجيلها كـ Factory أو Singleton
+    sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
+    sl.registerLazySingleton(() => RegisterUseCase(repository: sl()));
+
+    // 3. Blocs
+    // نستخدم registerFactory لأن الـ Bloc يحتاج أن يتم تدميره وإنشاؤه مع إغلاق الشاشات (Disposal)
+    sl.registerFactory(
+      () => AuthBloc(loginUseCase: sl(), registerUseCase: sl()),
+    );
   }
 }

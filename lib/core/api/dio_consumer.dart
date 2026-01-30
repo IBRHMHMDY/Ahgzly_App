@@ -23,6 +23,8 @@ class DioConsumer implements ApiConsumer {
       ..responseType = ResponseType
           .plain // نستقبل الداتا كنص ثم نحولها json لمرونة أكبر
       ..followRedirects = false
+      ..connectTimeout = const Duration(seconds: 20)
+      ..receiveTimeout = const Duration(seconds: 20)
       ..validateStatus = (status) {
         return status! <
             500; // نعتبر الـ request ناجح إذا كان الـ status أقل من 500 لمعالجة أخطاء الـ 400 يدوياً
