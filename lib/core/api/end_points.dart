@@ -1,7 +1,8 @@
 class EndPoints {
   // Android Emulator = 10.0.2.2
   // iOS Simulator, Physical Device = (Copy IP YourDevice)  192.168.1.X
-  static const String ip = "192.168.1.10";
+  // static const String ip = "192.168.1.10";
+  static const String ip = "10.0.2.2";
   static const String domain = "http://$ip:8000";
   static const String storageUrl = "$domain/storage";
   static const String baseUrl = "$domain/api/";

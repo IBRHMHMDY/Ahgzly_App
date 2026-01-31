@@ -2,8 +2,8 @@
 
 A modern restaurant booking application built with **Flutter** using **Clean Architecture** principles. This app allows users to browse restaurants, view details, and book tables seamlessly.
 
-![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)
+![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
 ![Laravel](https://img.shields.io/badge/laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white)
 
 ## 📱 Features
@@ -36,9 +36,29 @@ lib/
 │   ├── domain/             # Entities, Repositories Interfaces, UseCases
 │   └── presentation/       # BLoC/Cubit, Screens, Widgets
 └── main.dart
-📸 ScreenshotsLogin ScreenHome ScreenBooking ScreenMy Bookings🚀 Getting StartedPrerequisitesFlutter SDK installed.Laravel Backend running locally (or hosted).InstallationClone the repository:Bashgit clone [https://github.com/YOUR_USERNAME/ahgzly_app.git](https://github.com/YOUR_USERNAME/ahgzly_app.git)
-Install dependencies:Bashcd ahgzly_app
-flutter pub get
-Configure API Endpoint:Go to lib/core/api/end_points.dart.Update ip variable with your local machine IP (for Android Emulator/Physical Device).Dartstatic const String ip = "192.168.1.X"; // Your IP here
-Run the App:Bashflutter run
-🔗 BackendThis app connects to a Laravel API.Authentication: Sanctum (Bearer Token).Endpoints: /login, /register, /restaurants, /bookings.Developed with ❤️ by [Your Name]
+
+📸 Screenshots: 
+    * Login Screen ![Login].
+    * Regsiter Screen ![Register].
+    * Home Screen ![Home].
+    * Bookings Screen ![Bookings].
+    * MyBookings Screen ![MyBookings].
+🚀 Getting Started
+    Prerequisites
+    Flutter SDK installed.
+    Laravel Backend running locally (or hosted).
+
+#### Installation
+Clone the repository: clone [https://github.com/IBRHMHMDY/ahgzly_app.git](https://github.com/IBRHMHMDY/ahgzly_app.git)
+Install dependencies: flutter pub get
+Configure API Endpoint:Go to lib/core/api/end_points.dart.
+Update ip variable with your local machine IP (for Android Emulator/Physical Device).
+>> static const String ip = "192.168.1.X"; // Your IP here
+Run the App: >>flutter run
+
+### 🔗 Backend
+This app connects to a Laravel API.
+Authentication: Sanctum (Bearer Token).
+Endpoints: /login, /register, /restaurants, /bookings, /mybookings ....
+
+Developed with ❤️ by IbrahimHamdy
